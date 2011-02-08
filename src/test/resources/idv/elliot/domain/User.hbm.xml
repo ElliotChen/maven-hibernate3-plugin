@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="idv.elliot.domain">
+	<class name="Identifiable" abstract="true">
+		<id name="oid" type="string">
+			<column name="oid" length="32" />
+			<generator class="uuid" />
+		</id>
+		<version name="version" column="VERSION"></version>
+		<property name="createAccount" column="CREATE_ACCOUNT"
+			length="50" type="string" />
+		<property name="createDate" column="CREATE_DATE" type="timestamp" />
+		<property name="updateAccount" column="UPDATE_ACCOUNT"
+			length="50" type="string" />
+		<property name="updateDate" column="UPDATE_DATE" type="timestamp" />
+		<union-subclass name="User" table="T_USER">
+			<property name="name" type="string" column="NAME" length="50" />
+			<property name="gender" column="GENDER" length="6">
+				<type name="org.hibernate.type.EnumType">
+					<param name="enumClass">idv.elliot.domain.Gender</param>
+					<param name="type">12</param>
+				</type>
+			</property>
+			<many-to-one name="profile" column="PROFILE_ID" class="Profile"
+				cascade="all" unique="true" not-null="false"/>
+		</union-subclass>
+		<union-subclass name="Profile" table="T_PROFILE">
+			<property name="address" type="string" column="ADDRESS" length="50" />
+			<property name="admin" type="yes_no" column="ADMIN" length="1" />
+		</union-subclass>
+	</class>
+</hibernate-mapping>
