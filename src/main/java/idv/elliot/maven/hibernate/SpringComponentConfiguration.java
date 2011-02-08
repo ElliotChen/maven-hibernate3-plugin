@@ -1,6 +1,7 @@
 package idv.elliot.maven.hibernate;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.mojo.hibernate3.ExporterMojo;
 import org.codehaus.mojo.hibernate3.configuration.AbstractComponentConfiguration;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
@@ -26,7 +27,6 @@ public class SpringComponentConfiguration extends AbstractComponentConfiguration
 		ThreadLocalConnectionProvider.setDataSource(lsfb.getDataSource());
 		Configuration configuration = lsfb.getConfiguration();
 		configuration.setProperty(Environment.CONNECTION_PROVIDER, ThreadLocalConnectionProvider.class.getName());
-
 		return configuration;
 	}
 
@@ -41,7 +41,7 @@ public class SpringComponentConfiguration extends AbstractComponentConfiguration
 
 		// Initial ApplicationContext from spring configuration xml files.
 		try {
-			
+
 			this.applicationContext = new ClassPathXmlApplicationContext(locations);
 		} catch (Exception e) {
 			logger.error("Load Spring Configuration Fail.", e);
@@ -52,7 +52,8 @@ public class SpringComponentConfiguration extends AbstractComponentConfiguration
 		// Get SessionFactoryBean from spring
 		Object bean = applicationContext.getBean("&" + sessionFactoryBean);
 		if (null == bean || !(bean instanceof LocalSessionFactoryBean)) {
-			logger.error("Can't find any bean named {} or {} is not a LocalSessionFactoryBean instance.", sessionFactoryBean, bean);
+			logger.error("Can't find any bean named {} or {} is not a LocalSessionFactoryBean instance.",
+					sessionFactoryBean, bean);
 			throw new MojoExecutionException(
 					"Please check your hibernate configurations for AnnotationSessionFactoryBean or LocalSessionFactoryBean. [sessionFactoryBean]="
 							+ sessionFactoryBean);
