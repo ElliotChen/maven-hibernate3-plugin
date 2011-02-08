@@ -34,7 +34,7 @@ public class SpringComponentConfiguration extends AbstractComponentConfiguration
 	protected void validateParameters() throws MojoExecutionException {
 		String sessionFactoryBean = getExporterMojo().getComponentProperty("sessionFactoryBean", "sessionFactory");
 		String contextLocations = getExporterMojo().getComponentProperty("contextLocations",
-				"classpath*:spring*.xml, classpath*:application*.xml");
+				"classpath*:spring*.xml, classpath*:*Context.xml");
 		logger.info("Initial info: [sessionFactoryBean]=" + sessionFactoryBean + ", [contextLocations]="
 				+ contextLocations);
 		String[] locations = StringUtils.delimitedListToStringArray(contextLocations, ",");
@@ -52,7 +52,7 @@ public class SpringComponentConfiguration extends AbstractComponentConfiguration
 		// Get SessionFactoryBean from spring
 		Object bean = applicationContext.getBean("&" + sessionFactoryBean);
 		if (null == bean || !(bean instanceof LocalSessionFactoryBean)) {
-			logger.error("Can't find any bean named {} or {} is not a LocalSessionFactoryBean instance.", sessionFactoryBean, sessionFactoryBean);
+			logger.error("Can't find any bean named {} or {} is not a LocalSessionFactoryBean instance.", sessionFactoryBean, bean);
 			throw new MojoExecutionException(
 					"Please check your hibernate configurations for AnnotationSessionFactoryBean or LocalSessionFactoryBean. [sessionFactoryBean]="
 							+ sessionFactoryBean);
